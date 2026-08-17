@@ -492,7 +492,7 @@ async function handleStage5(action) {
 async function startStage6() {
     await addLines([
         { text: "Director: Finally, we need to know what device he's using to coordinate the attack." },
-        { text: "[SYSTEM]: Enter the target's device (e.g., laptop, android, etc):", class: "system" }
+        { text: "[SYSTEM]: Enter the target's device (e.g., laptop, samsung, etc):", class: "system" }
     ]);
 }
 
