@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Marcus | LinkedIn</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+            background-color: #f3f2ef;
+            margin: 0;
+            padding: 0;
+            color: #000000e6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: white;
+            height: 52px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e1e9ee;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            box-sizing: border-box;
+        }
+
+        .navbar-content {
+            max-width: 1128px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #0a66c2;
+            font-weight: bold;
+            font-size: 24px;
+            text-decoration: none;
+            background: #0a66c2;
+            color: white;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .search-bar {
+            background-color: #eef3f8;
+            border-radius: 4px;
+            padding: 0 8px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            width: 280px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            margin-left: 8px;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666666;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: #000;
+        }
+
+        main {
+            max-width: 1128px;
+            margin: 72px auto 0;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+            padding: 0 24px;
+        }
+
+        .profile-card,
+        .section-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e1e9ee;
+            margin-bottom: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner {
+            height: 201px;
+            background-color: #a0b4b7;
+            width: 100%;
+            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-picture {
+            width: 152px;
+            height: 152px;
+            border-radius: 50%;
+            border: 4px solid white;
+            position: absolute;
+            top: 100px;
+            left: 24px;
+            background-color: #e1e9ee;
+            background-image: url('./images/person.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-info {
+            padding: 72px 24px 24px 24px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+            margin-top: 40px;
+        }
+
+        .profile-headline {
+            font-size: 16px;
+            color: #000000e6;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .profile-location {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 12px;
+        }
+
+        .profile-connections {
+            font-size: 14px;
+            color: #0a66c2;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-primary {
+            background-color: #0a66c2;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #0a66c2;
+            border: 1px solid #0a66c2;
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .section-header {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 24px 24px 0 24px;
+            margin: 0;
+        }
+
+        .section-content {
+            padding: 24px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .experience-item {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .experience-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background-color: #e1e9ee;
+            margin-right: 16px;
+        }
+
+        .job-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .company-name {
+            font-size: 14px;
+            margin: 2px 0;
+        }
+
+        .job-dates {
+            font-size: 14px;
+            color: #666666;
+            margin: 0 0 8px 0;
+        }
+
+        .sidebar-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e1e9ee;
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        .language-item {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e1e9ee;
+            margin-bottom: 12px;
+        }
+
+        .language-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* Mobile Layout Adjustments */
+        @media (max-width: 768px) {
+            main {
+                display: flex;
+                flex-direction: column;
+                padding: 0 16px;
+                gap: 16px;
+                margin-top: 64px;
+            }
+
+            .left-column,
+            .right-column {
+                width: 100%;
+            }
+
+            .nav-icons {
+                gap: 16px;
+            }
+
+            .nav-item span:last-child {
+                display: none;
+                /* Hide text on small screens, keep icons */
+            }
+
+            .search-bar {
+                width: 140px;
+            }
+
+            .profile-picture {
+                width: 110px;
+                height: 110px;
+                top: 100px;
+                left: 16px;
+                border-width: 3px;
+            }
+
+            .profile-info {
+                padding: 60px 16px 16px 16px;
+            }
+
+            .banner {
+                height: 140px;
+            }
+
+            .navbar {
+                padding: 0 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 0 8px;
+                gap: 8px;
+                margin-top: 56px;
+            }
+
+            .navbar {
+                padding: 0 12px;
+            }
+
+            .nav-icons {
+                gap: 12px;
+            }
+
+            .search-bar {
+                display: none;
+                /* Hide search bar entirely on very small screens for simplicity */
+            }
+
+            .profile-picture {
+                width: 90px;
+                height: 90px;
+                top: 80px;
+                left: 16px;
+                border-width: 3px;
+            }
+
+            .banner {
+                height: 100px;
+            }
+
+            .profile-info {
+                padding: 50px 16px 16px 16px;
+            }
+
+            .profile-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                flex: 1 1 100%;
+                /* Make buttons full width */
+                text-align: center;
+                margin: 0;
+            }
+
+            .experience-item {
+                flex-direction: column;
+            }
+
+            .company-logo {
+                margin-bottom: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <a href="#" class="logo">in</a>
+                <div class="search-bar">
+                    <span style="color: #666;">&#128269;</span>
+                    <input type="text" placeholder="Search">
+                </div>
+            </div>
+            <div class="nav-icons">
+                <div class="nav-item">
+                    <span style="font-size: 20px;">&#8962;</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item">
+                    <span style="font-size: 20px;">&#128101;</span>
+                    <span>My Network</span>
+                </div>
+                <div class="nav-item">
+                    <span style="font-size: 20px;">&#128188;</span>
+                    <span>Jobs</span>
+                </div>
+                <div class="nav-item">
+                    <span style="font-size: 20px;">&#128172;</span>
+                    <span>Messaging</span>
+                </div>
+                <div class="nav-item">
+                    <span style="font-size: 20px;">&#128276;</span>
+                    <span>Notifications</span>
+                </div>
+                <div class="nav-item" style="color: #000; border-bottom: 2px solid #000;">
+                    <span style="font-size: 20px;">&#128100;</span>
+                    <span>Me</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="left-column">
+            <!-- Intro Card -->
+            <div class="profile-card">
+                <div class="banner"></div>
+                <div class="profile-picture"></div>
+
+                <div class="profile-info">
+                    <h1 class="profile-name">Marcus Von Vanguard</h1>
+                    <div class="profile-headline">Senior Financial Analyst at Vanguard Data Solutions Inc. | Crypto
+                        Enthusiast</div>
+                    <div class="profile-location">Amsterdam, Netherlands · <a href="#" class="profile-connections"
+                            onclick="document.getElementById('contact-modal').style.display='flex'; return false;">Contact
+                            info</a> · <a href="#" class="profile-connections">500+
+                            connections</a></div>
+
+                    <div class="profile-actions">
+                        <button class="btn-primary">Connect</button>
+                        <button class="btn-secondary">Message</button>
+                        <button class="btn-secondary">More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="section-card">
+                <h2 class="section-header">About</h2>
+                <div class="section-content">
+                    Experienced Financial Analyst with a demonstrated history of working in the investment management
+                    industry. Skilled in Portfolio Management, Corporate Finance, Risk Management, and Financial
+                    Modeling. Strong finance professional with an MSc focused in Finance from London School of
+                    Economics.
+                    <br><br>
+                    Passionate about emerging markets and decentralized finance technologies. Always open to discussing
+                    new investment opportunities and blockchain applications in traditional finance.
+                </div>
+            </div>
+
+            <!-- Experience Section -->
+            <div class="section-card">
+                <h2 class="section-header">Experience</h2>
+                <div class="section-content">
+
+                    <div class="experience-item">
+                        <div class="company-logo"
+                            style="background-image: url('https://ui-avatars.com/api/?name=GI&background=0D8ABC&color=fff'); background-size: cover;">
+                        </div>
+                        <div>
+                            <h3 class="job-title">Senior Financial Analyst</h3>
+                            <div class="company-name">Vanguard Data Solutions Inc. · Full-time</div>
+                            <div class="job-dates">Mar 2021 - Present · 3 yrs 6 mos</div>
+                            <div class="job-dates" style="color: #000;">Amsterdam, Netherlands</div>
+                            <p style="margin-top: 8px;">
+                                - Lead analyst for European equities portfolio focusing on tech and finance sectors.<br>
+                                - Developed automated valuation models resulting in 20% efficiency increase.<br>
+                                - Co-authored the quarterly market outlook report distributed to high-net-worth clients.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background-color: #e1e9ee; margin: 16px 0;"></div>
+
+                    <div class="experience-item">
+                        <div class="company-logo"
+                            style="background-image: url('https://ui-avatars.com/api/?name=CS&background=1E3A8A&color=fff'); background-size: cover;">
+                        </div>
+                        <div>
+                            <h3 class="job-title">Financial Analyst</h3>
+                            <div class="company-name">Capital Strategies</div>
+                            <div class="job-dates">Jun 2018 - Feb 2021 · 2 yrs 9 mos</div>
+                            <div class="job-dates" style="color: #000;">Eygelshoven, Netherlands</div>
+                            <p style="margin-top: 8px;">
+                                - Conducted financial due diligence for M&A transactions in the fintech space.<br>
+                                - Analyzed market trends and competitive landscapes to support strategic planning.<br>
+                                - Assisted in the preparation of board decks and investor presentations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="section-card">
+                <h2 class="section-header">Education</h2>
+                <div class="section-content">
+                    <div class="experience-item">
+                        <div class="company-logo"
+                            style="background-image: url('https://ui-avatars.com/api/?name=LSE&background=800000&color=fff'); background-size: cover;">
+                        </div>
+                        <div>
+                            <h3 class="job-title">The London School of Economics and Political Science (LSE)</h3>
+                            <div class="company-name">Master of Science - MSc, Finance</div>
+                            <div class="job-dates">2017 - 2018</div>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background-color: #e1e9ee; margin: 16px 0;"></div>
+
+                    <div class="experience-item">
+                        <div class="company-logo"
+                            style="background-image: url('https://ui-avatars.com/api/?name=UCL&background=000000&color=fff'); background-size: cover;">
+                        </div>
+                        <div>
+                            <h3 class="job-title">UCL</h3>
+                            <div class="company-name">Bachelor of Science - BSc, Economics</div>
+                            <div class="job-dates">2014 - 2017</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="right-column">
+            <div class="sidebar-card">
+                <h2 class="sidebar-title">Languages</h2>
+                <div class="language-item">
+                    <div style="font-weight: 600;">English</div>
+                    <div style="color: #666; font-size: 14px;">Professional working proficiency</div>
+                </div>
+                <div class="language-item">
+                    <div style="font-weight: 600;">Dutch</div>
+                    <div style="color: #666; font-size: 14px;">Native or bilingual proficiency</div>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h2 class="sidebar-title">People also viewed</h2>
+                <!-- Fake profiles for side bar -->
+                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop'); background-size: cover;">
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Sarah Jenkins</div>
+                        <div style="font-size: 12px; color: #666;">Portfolio Manager at Vanguard Data Solutions</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=100&auto=format&fit=crop'); background-size: cover;">
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">David Chen</div>
+                        <div style="font-size: 12px; color: #666;">Investment Banking Associate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="contact-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:white; padding:24px; border-radius:8px; width:400px; max-width:90%;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #e1e9ee; padding-bottom:12px;">
+                <h2 style="margin:0; font-size:20px;">Contact Info</h2>
+                <span style="cursor:pointer; font-size:24px; color:#666;"
+                    onclick="document.getElementById('contact-modal').style.display='none'">&times;</span>
+            </div>
+            <div style="margin-bottom:16px;">
+                <h3 style="margin:0 0 4px 0; font-size:16px; color:#666;">Email</h3>
+                <a href="mailto:marcus@sg-test.top"
+                    style="color:#0a66c2; text-decoration:none; font-weight:600;">marcus@sg-test.top</a>
+            </div>
+            <div>
+                <h3 style="margin:0 0 4px 0; font-size:16px; color:#666;">Your Profile</h3>
+                <a href="#" style="color:#0a66c2; text-decoration:none;">linkedin.com/in/marcus-von-vanguard</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

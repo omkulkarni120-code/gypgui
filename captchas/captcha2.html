@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Captcha 2</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .captcha-container { background: #1e1e1e; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 450px; }
+        h2 { margin-top: 0; color: #ff758c; font-size: 28px; }
+        .level { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .level.active { display: block; opacity: 1; }
+        p { font-size: 18px; color: #bbbbbb; }
+        
+        /* Level 1 */
+        #hold-btn { padding: 20px 40px; font-size: 24px; border-radius: 12px; border: none; background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: white; cursor: pointer; user-select: none; transition: transform 0.1s; margin: 20px 0; font-weight: bold;}
+        #hold-btn:active { transform: scale(0.95); }
+        #time-result { font-size: 20px; font-family: monospace; color: #ff7eb3; min-height: 30px; }
+        
+        /* Level 2 */
+        #typed-text { font-size: 32px; letter-spacing: 10px; margin: 20px 0; color: #ff7eb3; min-height: 40px; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .key { padding: 20px; font-size: 24px; background: #333; border: 2px solid #555; border-radius: 8px; cursor: pointer; color: white; transition: background 0.2s; user-select: none; }
+        .key:hover { background: #444; border-color: #ff7eb3; }
+        
+        .success-msg { color: #00e676; font-size: 22px; font-weight: bold; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="captcha-container">
+    <h2>Security Check 2</h2>
+    
+    <div id="level1" class="level active">
+        <p>Step 1: Hold the button for exactly <strong>3.00</strong> seconds (±0.1s).</p>
+        <button id="hold-btn">HOLD</button>
+        <div id="time-result">0.00s</div>
+    </div>
+    
+    <div id="level2" class="level">
+        <p>Step 2: Type "HUMAN"</p>
+        <div id="typed-text"></div>
+        <div class="keypad" id="keypad"></div>
+        <div class="success-msg" id="success-msg">Human Verified! Redirecting...</div>
+    </div>
+</div>
+
+<script>
+    // Level 1 logic
+    const holdBtn = document.getElementById('hold-btn');
+    const timeResult = document.getElementById('time-result');
+    let startTime;
+    let timerInterval;
+    
+    holdBtn.addEventListener('mousedown', startHold);
+    holdBtn.addEventListener('touchstart', startHold);
+    
+    holdBtn.addEventListener('mouseup', stopHold);
+    holdBtn.addEventListener('mouseleave', stopHold);
+    holdBtn.addEventListener('touchend', stopHold);
+    
+    function startHold(e) {
+        if(e.type === 'touchstart') e.preventDefault();
+        startTime = Date.now();
+        holdBtn.style.background = 'linear-gradient(135deg, #00e676 0%, #00b0ff 100%)';
+        timerInterval = setInterval(() => {
+            let elapsed = (Date.now() - startTime) / 1000;
+            timeResult.innerText = elapsed.toFixed(2) + 's';
+        }, 10);
+    }
+    
+    function stopHold(e) {
+        if (!startTime) return;
+        if(e.type === 'touchend') e.preventDefault();
+        clearInterval(timerInterval);
+        let elapsed = (Date.now() - startTime) / 1000;
+        startTime = null;
+        holdBtn.style.background = 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)';
+        
+        timeResult.innerText = elapsed.toFixed(2) + 's';
+        
+        if (Math.abs(elapsed - 3.00) <= 0.1) {
+            timeResult.style.color = '#00e676';
+            timeResult.innerText += " - Perfect!";
+            setTimeout(() => {
+                document.getElementById('level1').classList.remove('active');
+                setTimeout(startLevel2, 300);
+            }, 1000);
+        } else {
+            timeResult.style.color = '#ff758c';
+            timeResult.innerText += " - Try again!";
+        }
+    }
+
+    // Level 2 logic
+    const targetWord = "HUMAN";
+    let typed = "";
+    const letters = ['H','U','M','A','N','X','Y','Z','!'];
+    
+    function startLevel2() {
+        document.getElementById('level2').classList.add('active');
+        renderKeypad();
+    }
+    
+    function renderKeypad() {
+        const keypad = document.getElementById('keypad');
+        keypad.innerHTML = '';
+        
+        // Shuffle letters
+        let shuffled = [...letters].sort(() => Math.random() - 0.5);
+        
+        shuffled.forEach(letter => {
+            const btn = document.createElement('div');
+            btn.className = 'key';
+            btn.innerText = letter;
+            btn.onclick = () => handleKeyPress(letter);
+            keypad.appendChild(btn);
+        });
+    }
+    
+    function handleKeyPress(letter) {
+        const expected = targetWord[typed.length];
+        if (letter === expected) {
+            typed += letter;
+            document.getElementById('typed-text').innerText = typed;
+            if (typed === targetWord) {
+                document.getElementById('success-msg').style.opacity = '1';
+                setTimeout(() => window.location.href = 'https://example.com', 1500);
+            } else {
+                renderKeypad(); // Shuffle on every correct press!
+            }
+        } else {
+            // Wrong press, reset!
+            typed = "";
+            document.getElementById('typed-text').innerText = typed;
+            document.getElementById('typed-text').style.color = '#ff758c';
+            setTimeout(() => document.getElementById('typed-text').style.color = '#ff7eb3', 300);
+            renderKeypad();
+        }
+    }
+</script>
+</body>
+</html>

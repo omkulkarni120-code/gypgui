@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Captcha 3</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .captcha-container { background: #1e1e1e; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 480px; }
+        h2 { margin-top: 0; color: #a18cd1; font-size: 28px; }
+        .level { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .level.active { display: block; opacity: 1; }
+        p { font-size: 18px; color: #bbbbbb; }
+        
+        /* Level 1 */
+        .grid-cb { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .cb-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #2a2a2a; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.2s; position: relative; }
+        .cb-item:hover { background: #3a3a3a; }
+        .cb-item input { margin-bottom: 5px; pointer-events: none; accent-color: #a18cd1; }
+        .cb-item span { font-size: 12px; color: #888; user-select: none; }
+        
+        /* Level 2 */
+        #board-wrapper { perspective: 500px; margin: 30px auto; width: 300px; height: 300px; }
+        #board { width: 100%; height: 100%; background: #333; border-radius: 50%; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); transition: transform 0.1s linear; }
+        #zone { position: absolute; width: 60px; height: 60px; background: rgba(0,230,118,0.2); border: 2px dashed #00e676; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: background 0.2s; }
+        #ball { position: absolute; width: 20px; height: 20px; background: #a18cd1; border-radius: 50%; top: 50%; left: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+        
+        #progress-container { width: 100%; height: 10px; background: #333; border-radius: 5px; margin-top: 20px; overflow: hidden; }
+        #progress-bar { width: 0%; height: 100%; background: #00e676; transition: width 0.1s; }
+        
+        .success-msg { color: #00e676; font-size: 22px; font-weight: bold; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="captcha-container">
+    <h2>Security Check 3</h2>
+    
+    <div id="level1" class="level active">
+        <p>Step 1: Find and select the "Human" box.</p>
+        <div class="grid-cb" id="cb-grid"></div>
+    </div>
+    
+    <div id="level2" class="level">
+        <p>Step 2: Balance the ball in the green zone for 3s.</p>
+        <p style="font-size: 14px; margin-top:-10px;">(Move your mouse to tilt the board)</p>
+        <div id="board-wrapper">
+            <div id="board">
+                <div id="zone"></div>
+                <div id="ball"></div>
+            </div>
+        </div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="success-msg" id="success-msg">Human Verified! Redirecting...</div>
+    </div>
+</div>
+
+<script>
+    // Level 1 logic
+    const grid = document.getElementById('cb-grid');
+    const words = ["Robot", "Alien", "Bot", "Script", "AI", "Cyborg", "Dog", "Cat", "Toaster", "Printer", "Car", "Chair"];
+    let humanIndex = Math.floor(Math.random() * 25);
+    
+    for(let i=0; i<25; i++) {
+        const item = document.createElement('div');
+        item.className = 'cb-item';
+        
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        
+        const label = document.createElement('span');
+        if (i === humanIndex) {
+            label.innerText = "Human";
+            item.onclick = () => {
+                cb.checked = true;
+                item.style.background = 'rgba(0,230,118,0.2)';
+                setTimeout(() => {
+                    document.getElementById('level1').classList.remove('active');
+                    setTimeout(startLevel2, 300);
+                }, 500);
+            };
+        } else {
+            label.innerText = words[Math.floor(Math.random() * words.length)];
+            item.onclick = () => {
+                cb.checked = !cb.checked;
+                // Instantly uncheck to distract
+                setTimeout(() => cb.checked = false, 200);
+            };
+        }
+        
+        // Randomly rotate labels to make it harder to scan
+        label.style.transform = `rotate(${(Math.random()-0.5)*40}deg)`;
+        
+        item.appendChild(cb);
+        item.appendChild(label);
+        grid.appendChild(item);
+    }
+
+    // Level 2 logic
+    let ballX = 0, ballY = 0; // Relative to center (-140 to 140)
+    let vx = 0, vy = 0;
+    let tiltX = 0, tiltY = 0;
+    let isLevel2Active = false;
+    let balanceTime = 0;
+    
+    function startLevel2() {
+        document.getElementById('level2').classList.add('active');
+        isLevel2Active = true;
+        requestAnimationFrame(updatePhysics);
+    }
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isLevel2Active) return;
+        // Map mouse position to tilt
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        tiltY = (x - 0.5) * 60; // tilt around Y axis based on mouse X
+        tiltX = -(y - 0.5) * 60; // tilt around X axis based on mouse Y
+        
+        document.getElementById('board').style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    });
+    
+    function updatePhysics() {
+        if (!isLevel2Active) return;
+        
+        // Acceleration based on tilt
+        vx += tiltY * 0.02;
+        vy += -tiltX * 0.02;
+        
+        // Friction
+        vx *= 0.95;
+        vy *= 0.95;
+        
+        ballX += vx;
+        ballY += vy;
+        
+        // Boundaries (board is 300x300, ball is 20x20) radius = 140
+        const dist = Math.sqrt(ballX*ballX + ballY*ballY);
+        if (dist > 140) {
+            // Bounce off the edge
+            const angle = Math.atan2(ballY, ballX);
+            ballX = Math.cos(angle) * 140;
+            ballY = Math.sin(angle) * 140;
+            vx *= -0.5;
+            vy *= -0.5;
+        }
+        
+        const ball = document.getElementById('ball');
+        ball.style.transform = `translate(calc(-50% + ${ballX}px), calc(-50% + ${ballY}px))`;
+        
+        // Check if in zone (zone radius = 30)
+        if (dist < 20) {
+            balanceTime += 16.6; // roughly 16.6ms per 60fps frame
+            document.getElementById('zone').style.background = 'rgba(0,230,118,0.5)';
+        } else {
+            balanceTime = Math.max(0, balanceTime - 8.3); // deplete slightly slower than gain
+            document.getElementById('zone').style.background = 'rgba(0,230,118,0.2)';
+        }
+        
+        const progress = Math.min(100, (balanceTime / 3000) * 100);
+        document.getElementById('progress-bar').style.width = progress + '%';
+        
+        if (progress >= 100) {
+            isLevel2Active = false;
+            document.getElementById('success-msg').style.opacity = '1';
+            setTimeout(() => window.location.href = 'https://example.com', 1500);
+            return;
+        }
+        
+        requestAnimationFrame(updatePhysics);
+    }
+</script>
+</body>
+</html>

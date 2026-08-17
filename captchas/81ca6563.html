@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Captcha</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .captcha-container {
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 450px;
+            position: relative;
+            z-index: 10;
+        }
+        h2 {
+            margin-top: 0;
+            color: #4facfe;
+            font-size: 28px;
+        }
+        .level {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .level.active {
+            display: block;
+            opacity: 1;
+        }
+        p {
+            font-size: 18px;
+            color: #bbbbbb;
+        }
+        
+        /* Level 1 styles */
+        #runaway-wrapper {
+            position: absolute;
+            cursor: pointer;
+            padding: 12px 20px;
+            border: 2px solid #4facfe;
+            border-radius: 8px;
+            background: #1e1e1e;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s ease-out;
+            z-index: 100;
+        }
+        #runaway-wrapper:hover {
+            box-shadow: 0 0 15px rgba(79, 172, 254, 0.5);
+        }
+        #runaway-wrapper input {
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            accent-color: #00e676;
+        }
+        .initial-pos {
+            position: relative;
+            margin: 40px auto;
+            width: max-content;
+        }
+        
+        /* Level 2 styles */
+        .slider-container {
+            margin: 40px 0;
+        }
+        #slider {
+            width: 100%;
+            cursor: pointer;
+            height: 10px;
+            border-radius: 5px;
+            background: #333;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        #slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4facfe;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #slider::-webkit-slider-thumb:hover {
+            background: #00f2fe;
+        }
+        .target-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4facfe;
+            margin: 10px 0;
+            display: block;
+        }
+        .slider-val {
+            font-size: 20px;
+            color: #eee;
+            margin-top: 15px;
+        }
+        
+        .success-msg {
+            color: #00e676;
+            font-size: 22px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="captcha-container" id="main-container">
+    <h2>Security Check</h2>
+    
+    <!-- Level 1 -->
+    <div id="level1" class="level active">
+        <p>Step 1: Click the checkbox to prove you are human.</p>
+        <div class="initial-pos" id="cb-initial">
+            <div id="runaway-wrapper" onclick="completeLevel1()">
+                <input type="checkbox" id="runaway-cb">
+                <label style="cursor:pointer;" for="runaway-cb">I am human</label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Level 2 -->
+    <div id="level2" class="level">
+        <p>Step 2: Balance the slider exactly at <span class="target-text" id="target-number"></span></p>
+        <div class="slider-container">
+            <input type="range" id="slider" min="0" max="1000" value="0">
+            <div class="slider-val">Current: <span id="current-val">0.0</span></div>
+        </div>
+        <div class="success-msg" id="success-msg">Human Verified! Redirecting...</div>
+    </div>
+</div>
+
+<script>
+    // Level 1 logic
+    const wrapper = document.getElementById('runaway-wrapper');
+    const level1 = document.getElementById('level1');
+    const level2 = document.getElementById('level2');
+    
+    let jumps = 0;
+    const maxJumps = 8;
+    let isDetached = false;
+    
+    wrapper.addEventListener('mouseover', () => {
+        if (jumps < maxJumps) {
+            if (!isDetached) {
+                // Detach from flow and append to body so it can roam free
+                const rect = wrapper.getBoundingClientRect();
+                wrapper.style.position = 'absolute';
+                wrapper.style.left = rect.left + 'px';
+                wrapper.style.top = rect.top + 'px';
+                document.body.appendChild(wrapper);
+                isDetached = true;
+            }
+            
+            // Move to a random position within viewport
+            const padding = 50;
+            const maxX = window.innerWidth - wrapper.offsetWidth - padding;
+            const maxY = window.innerHeight - wrapper.offsetHeight - padding;
+            
+            const newX = Math.max(padding, Math.random() * maxX);
+            const newY = Math.max(padding, Math.random() * maxY);
+            
+            wrapper.style.left = newX + 'px';
+            wrapper.style.top = newY + 'px';
+            
+            jumps++;
+        } else {
+            // Tires out, turns green to indicate it can be clicked
+            wrapper.style.borderColor = '#00e676';
+            wrapper.style.boxShadow = '0 0 15px rgba(0, 230, 118, 0.5)';
+        }
+    });
+
+    function completeLevel1() {
+        if (jumps >= maxJumps || Math.random() < 0.1) { // 10% chance to catch it early if they are fast
+            document.getElementById('runaway-cb').checked = true;
+            wrapper.style.borderColor = '#00e676';
+            
+            setTimeout(() => {
+                if (isDetached) wrapper.style.display = 'none'; // hide it
+                level1.classList.remove('active');
+                setTimeout(() => {
+                    startLevel2();
+                }, 300);
+            }, 600);
+        } else {
+             // they clicked it before it tired out? just jump again
+             wrapper.dispatchEvent(new Event('mouseover'));
+        }
+    }
+
+    // Level 2 logic
+    let targetNum = 0;
+    
+    function startLevel2() {
+        level2.classList.add('active');
+        
+        // Random target like 42.7
+        targetNum = (Math.random() * 80 + 10).toFixed(1); 
+        document.getElementById('target-number').innerText = targetNum;
+        
+        const slider = document.getElementById('slider');
+        const currentVal = document.getElementById('current-val');
+        
+        slider.addEventListener('input', (e) => {
+            let val = (e.target.value / 10).toFixed(1);
+            
+            // The annoying part: slider "slips" or "wiggles" randomly when moving
+            if (Math.random() > 0.6) {
+                let slip = (Math.random() * 2 - 1); // -1 to 1
+                slider.value = parseInt(slider.value) + slip * 15;
+                val = (slider.value / 10).toFixed(1);
+            }
+            
+            currentVal.innerText = val;
+            
+            if (val === targetNum) {
+                // Success!
+                slider.disabled = true;
+                const msg = document.getElementById('success-msg');
+                msg.style.opacity = '1';
+                slider.style.background = '#00e676';
+                
+                setTimeout(() => {
+                    window.location.href = 'https://example.com';
+                }, 2000);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

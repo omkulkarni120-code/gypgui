@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Phone</title>
+    <!-- <script src="https://livejs.org/live.js"></script> -->
+    <link rel="stylesheet" href="./css/phone.css">
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <script src="https://browser.sentry-cdn.com/10.70.0/bundle.tracing.min.js"
+        integrity="sha384-ulyO9H9VeI4hygF7covSnj5NGna+KSaE/01Q5PU4fd9/Khcy3m1evRxyI3ylwhvS"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="phone">
+        <div class="home-btn"></div>
+        <div class="screen">
+            <div class="app-screen lock-screen">
+                <h2>Password to unlock</h2>
+                <input type="text" class="pass" disabled>
+                <div class="pass-cols">
+                    <div class="pass-col">
+                        <button onclick="InsertPassInput('1')">1</button>
+                        <button onclick="InsertPassInput('2')">2</button>
+                        <button onclick="InsertPassInput('3')">3</button>
+                    </div>
+                    <div class="pass-col">
+                        <button onclick="InsertPassInput('4')">4</button>
+                        <button onclick="InsertPassInput('5')">5</button>
+                        <button onclick="InsertPassInput('6')">6</button>
+                    </div>
+                    <div class="pass-col">
+                        <button onclick="InsertPassInput('7')">7</button>
+                        <button onclick="InsertPassInput('8')">8</button>
+                        <button onclick="InsertPassInput('9')">9</button>
+                    </div>
+                    <div class="pass-col">
+                        <button onclick="InsertPassInput('del')">⌫</button>
+                        <button onclick="InsertPassInput('0')">0</button>
+                        <button onclick="Unlock()">Ok</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-screen home">
+                <div class="app" onclick="OpenCalcApp()">
+                    <img src="./images/phone-calc-icon.png" alt="">
+                    <div class="name">Calculator</div>
+                </div>
+
+                <div class="app" onclick="OpenPhotosApp()">
+                    <img src="./images/phone-photo-icon.png" alt="">
+                    <div class="name">Photos</div>
+                </div>
+            </div>
+
+            <div class="app-screen photos-app">
+                <div class="photos">
+                    <img src="./images/qr-roll.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/qr-roll.png')">
+                    <img src="./images/qr-brot.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/qr-brot.png')">
+                    <img src="./images/persons.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/persons.png')">
+                    <img src="./images/person.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/person.png')">
+                    <img src="./images/persons-2.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/persons-2.png')">
+                    <img src="./images/person-3.png" alt="" class="photo"
+                        onclick="OpenPhotosAppImageViewer('./images/person-3.png')">
+                </div>
+
+                <div class="viewer">
+                    <img alt="" class="photo">
+                    <button onclick="SharePhoto()">Share</button>
+                    <button onclick="ClosePhotoAppImageViewer()">Close</button>
+                </div>
+
+                <div class="share-dialog">
+                    <b>Select an app</b>
+                    <div class="share-option" onclick="OpenRevImgSearch()">
+                        <img src="./images/phone-calc-icon.png" alt="">
+                        Calculator
+                    </div>
+                    <button class="cancel-btn" onclick="CloseShareDialog()">Cancel</button>
+                </div>
+            </div>
+
+            <div class="app-screen calc-app">
+                Just a normal calculator app, trust me 😉
+                <div class="container">
+                    <input type="text" disabled>
+                    <div class="btns">
+                        <div class="btn-col">
+                            <button onclick="InsertCalcInput('1')">1</button>
+                            <button onclick="InsertCalcInput('2')">2</button>
+                            <button onclick="InsertCalcInput('3')">3</button>
+                        </div>
+                        <div class="btn-col">
+                            <button onclick="InsertCalcInput('4')">4</button>
+                            <button onclick="InsertCalcInput('5')">5</button>
+                            <button onclick="InsertCalcInput('6')">6</button>
+                        </div>
+                        <div class="btn-col">
+                            <button onclick="InsertCalcInput('7')">7</button>
+                            <button onclick="InsertCalcInput('8')">8</button>
+                            <button onclick="InsertCalcInput('9')">9</button>
+                        </div>
+                        <div class="btn-col">
+                            <button onclick="InsertCalcInput('del')">⌫</button>
+                            <button onclick="InsertCalcInput('0')">0</button>
+                            <button onclick="CalcAppEval()">=</button>
+                        </div>
+                        <div class="btn-col">
+                            <button onclick="InsertCalcInput('+')">+</button>
+                            <button onclick="InsertCalcInput('-')">-</button>
+                            <button onclick="InsertCalcInput('*')">x</button>
+                            <button onclick="InsertCalcInput('/')">÷</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-screen rev-img-search">
+                <div class="h-captcha" data-callback="onHCaptchaVerified"
+                    data-sitekey="99e0753a-675c-42ec-9528-9fce1bee4624"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    let OpenImage = null;
+
+    document.querySelector('.home-btn').addEventListener('click', () => {
+        if (document.querySelector('.lock-screen')) return; // If lock screen present, don't allow going to home
+
+        // Close all app screens
+        document.querySelectorAll('.app-screen').forEach(e => {
+            e.style.display = 'none';
+        });
+
+        // Show home screen
+        document.querySelector('.home').style.display = 'flex';
+    });
+
+    function InsertPassInput(key) {
+        if (key === 'del') {
+            document.querySelector('.pass').value = document.querySelector('.pass').value.slice(0, -1);
+        } else {
+            if (document.querySelector('.pass').value.length >= 4) {
+                alert('Max 4 characters!');
+            } else {
+                document.querySelector('.pass').value += key;
+            }
+        }
+    }
+
+    function Unlock() {
+        if (document.querySelector('.pass').value.length === 4) {
+            if (document.querySelector('.pass').value === atob('MDAwMA==')) {
+                document.querySelector('.lock-screen').remove();
+                document.querySelector('.home').style.display = 'flex';
+            } else {
+                document.querySelector('.pass').value = '';
+                const audio = document.createElement('audio');
+                audio.src = 'audio/faaah.mp3';
+                audio.play();
+                audio.remove();
+                alert('Wrong password!');
+            }
+        } else {
+            alert('Password is 4 characters long!');
+        }
+    }
+
+    function OpenPhotosApp() {
+        document.querySelector('.home').style.display = 'none';
+        document.querySelector('.photos-app').style.display = 'flex';
+    }
+
+    function OpenPhotosAppImageViewer(img) {
+        document.querySelector('.photos-app .viewer img').src = img;
+        document.querySelector('.photos-app .viewer').style.display = 'block';
+        // Set the current global open image var
+        OpenImage = img;
+    }
+
+    function ClosePhotoAppImageViewer() {
+        document.querySelector('.photos-app .viewer').style.display = 'none';
+        // Reset the current global open image var
+        OpenImage = null;
+    }
+
+    function SharePhoto() {
+        document.querySelector('.share-dialog').style.display = 'block';
+    }
+
+    function OpenCalcApp() {
+        document.querySelector('.home').style.display = 'none';
+        document.querySelector('.calc-app').style.display = 'flex';
+    }
+
+    function InsertCalcInput(key) {
+        if (key === 'del') {
+            document.querySelector('.calc-app input').value = document.querySelector('.calc-app input').value.slice(0, -1);
+        } else {
+            document.querySelector('.calc-app input').value += key;
+        }
+    }
+
+    function CalcAppEval() {
+        document.querySelector('.calc-app input').value = eval(document.querySelector('.calc-app input').value);
+    }
+
+    function CloseShareDialog() {
+        document.querySelector('.share-dialog').style.display = 'none';
+    }
+
+    function OpenRevImgSearch() {
+        if (OpenImage === './images/person.png') {
+            document.querySelector('.rev-img-search').style.display = 'block';
+        } else {
+            alert('Cannot open this image with calculator!');
+        }
+    }
+
+    function onHCaptchaVerified() {
+        document.querySelector('.rev-img-search').innerHTML = atob('PGg0IHN0eWxlPSJtYXJnaW46MDtwYWRkaW5nOjA7dGV4dC1hbGlnbjpjZW50ZXI7Ij5DYWxjdWxhdG9yOiBSZXZlcnNlIEltYWdlIFNlYXJjaCBNb2RlPC9oND4KICAgICAgICAgICAgICAgIDxoNSBzdHlsZT0ibWFyZ2luOjA7cGFkZGluZzowO3RleHQtYWxpZ246IGNlbnRlcjsiPkNvbmdyYXRzLCB5b3UgZGlzY292ZXJlZCBhIHNlY3JldCB0aGluZyE8L2g1PgogICAgICAgICAgICAgICAgPGltZyBzcmM9Ii4vaW1hZ2VzL3BlcnNvbi5wbmciPgogICAgICAgICAgICAgICAgPGg0IHN0eWxlPSJtYXJnaW46MCI+UmVzdWx0OjwvaDQ+CiAgICAgICAgICAgICAgICBJbnN0YWdyYW0gLSBAbWFyY3VzdnZhbmd1YXJk');
+    }
+
+    // Error logging
+    Sentry.init({
+        dsn: "https://014048ae62f644208a429b561d74b5df@glitchtip.sg-app.com/2",
+        tracesSampleRate: 0.01, // 1% of transactions — adjust to your needs
+        autoSessionTracking: false, // GlitchTip does not support sessions
+    });
+</script>
+
+</html>
