@@ -10,6 +10,16 @@ let state = {
     isTyping: false
 };
 
+let urgencyTimer;
+function resetUrgencyTimer() {
+    clearTimeout(urgencyTimer);
+    if (state.stage >= 1 && state.stage <= 6) {
+        urgencyTimer = setTimeout(() => {
+            addLine("Director [URGENT]: Hurry, Agent! The connection is bouncing. We might lose the trace...", "error", false);
+        }, 20000); // 20 seconds of inactivity
+    }
+}
+
 function addLine(text, className = 'director', typingEffect = true) {
     return new Promise(resolve => {
         const line = document.createElement('div');
@@ -64,6 +74,8 @@ function processCommand(cmd) {
     if (state.isTyping) return;
     const action = cmd.toLowerCase().trim();
     if (!action) return;
+
+    clearTimeout(urgencyTimer);
 
     addLine(`> ${cmd}`, 'player', false);
 
@@ -365,7 +377,7 @@ function startCaptcha4(onSuccess) {
 // Stages
 // ----------------------------------------------------
 
-window.continueToStage1 = function() {
+window.continueToStage1 = function () {
     if (state.stage === 0) {
         state.stage = 1;
         state.failures = 0;
@@ -391,6 +403,7 @@ async function startStage1() {
         { text: "Director: We need their Instagram username to trace their network. Extract it using the remote access phone." },
         { text: "[SYSTEM]: Enter the target's Instagram username:", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage1(action) {
@@ -407,6 +420,7 @@ async function handleStage1(action) {
         if (state.failures >= 3) {
             await addLine("Director [HINT]: Look through the phone apps.", "hint");
         }
+        resetUrgencyTimer();
     }
 }
 
@@ -416,6 +430,7 @@ async function startStage2() {
         { text: "Director: Thoroughly scan their Instagram profile and links and whatever other information you can find." },
         { text: "[SYSTEM]: Enter the target's full name:", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage2(action) {
@@ -426,6 +441,7 @@ async function handleStage2(action) {
         setTimeout(startStage3, 500);
     } else {
         await addLine("[SYSTEM]: Name does not match records.", "error");
+        resetUrgencyTimer();
     }
 }
 
@@ -434,16 +450,18 @@ async function startStage3() {
         { text: "Director: Now, find out where he works. It should be listed on his professional profile." },
         { text: "[SYSTEM]: Enter the name of the company:", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage3(action) {
-    if (action === 'vanguard data') {
+    if (action === 'vanguard data' || action === 'vanguard data solutions') {
         await addLine("Director: Company verified: Vanguard Data Solutions.");
         state.stage = 4;
         state.failures = 0;
         setTimeout(startStage4, 500);
     } else {
         await addLine("[SYSTEM]: Company name incorrect.", "error");
+        resetUrgencyTimer();
     }
 }
 
@@ -452,6 +470,7 @@ async function startStage4() {
         { text: "Director: We need to escalate our access. Find his email address." },
         { text: "[SYSTEM]: Enter the target's email address:", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage4(action) {
@@ -464,6 +483,7 @@ async function handleStage4(action) {
         });
     } else {
         await addLine("[SYSTEM]: Invalid email address.", "error");
+        resetUrgencyTimer();
     }
 }
 
@@ -472,6 +492,7 @@ async function startStage5() {
         { text: "Director: Let's check his other socials. Find out his X username." },
         { text: "[SYSTEM]: Enter the target's X username:", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage5(action) {
@@ -482,6 +503,7 @@ async function handleStage5(action) {
         setTimeout(startStage6, 500);
     } else {
         await addLine("[SYSTEM]: Username not found.", "error");
+        resetUrgencyTimer();
     }
 }
 
@@ -490,10 +512,11 @@ async function startStage6() {
         { text: "Director: Finally, we need to know what device he's using to coordinate the attack." },
         { text: "[SYSTEM]: Enter the target's device (e.g., laptop, samsung, etc):", class: "system" }
     ]);
+    resetUrgencyTimer();
 }
 
 async function handleStage6(action) {
-    if (action.includes('iphone') || action === 'apple iphone') {
+    if (action.includes('iphone')) {
         startCaptcha3(async () => {
             await addLine("Director: Confirmed. The device is an iPhone.");
             state.stage = 7;
@@ -502,6 +525,7 @@ async function handleStage6(action) {
         });
     } else {
         await addLine("[SYSTEM]: Incorrect device.", "error");
+        resetUrgencyTimer();
     }
 }
 
@@ -538,10 +562,36 @@ async function startStage8() {
     await new Promise(r => setTimeout(r, 1500));
     await addLines([
         { text: "[BREACHING BOILER ROOM]", class: "system" },
-        { text: "Director: You kick the door down! A hooded figure is frantically typing at a terminal." },
-        { text: "A massive progress bar on the screen reads: WIPE PROGRESS... 99%.", class: "error" },
-        { text: "[SYSTEM]: QUICK! What do you do?!", class: "system" }
+        { text: "Director: You kick the door down! A hooded figure is frantically typing at a terminal." }
     ]);
+
+    // Enhanced climax visuals
+    terminal.classList.add('panic-mode');
+
+    let line = document.createElement('div');
+    line.className = 'line error';
+    output.appendChild(line);
+
+    state.isTyping = true;
+    input.disabled = true;
+
+    let progress = 99.0;
+    line.innerHTML = `WIPE PROGRESS... ${progress.toFixed(1)}%`;
+    terminal.scrollTop = terminal.scrollHeight;
+
+    const interval = setInterval(() => {
+        progress += 0.1;
+        if (progress >= 99.9) {
+            progress = 99.9;
+            clearInterval(interval);
+            state.isTyping = false;
+            input.disabled = false;
+            input.focus();
+            addLine("[SYSTEM]: CRITICAL! WIPE AT 99.9%! QUICK! What do you do?!", "error");
+        }
+        line.innerHTML = `WIPE PROGRESS... ${progress.toFixed(1)}%`;
+        terminal.scrollTop = terminal.scrollHeight;
+    }, 400);
 }
 
 async function handleStage8(action) {
@@ -558,6 +608,7 @@ async function handleStage8(action) {
 }
 
 async function startStage9() {
+    terminal.classList.remove('panic-mode');
     await addLines([
         { text: "==================================================", class: "system" },
         { text: "STAGE 4: The Anti-Climax", class: "system" },

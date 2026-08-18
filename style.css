@@ -402,3 +402,29 @@ main#terminal::-webkit-scrollbar-thumb {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Panic Mode Animation for Climax */
+.panic-mode {
+    animation: shake 0.5s infinite, flash-red 1s infinite;
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 30px rgba(255, 51, 102, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8) !important;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@keyframes flash-red {
+    0%, 100% { background: var(--term-bg); }
+    50% { background: rgba(50, 10, 10, 0.9); }
+}
