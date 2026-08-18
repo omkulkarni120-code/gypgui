@@ -416,7 +416,7 @@ async function handleStage1(action) {
         });
     } else {
         state.failures++;
-        await addLine("[SYSTEM]: Incorrect instagram url.", "error");
+        await addLine("[SYSTEM]: Incorrect.", "error");
         if (state.failures >= 3) {
             await addLine("Director [HINT]: Look through the phone apps.", "hint");
         }
@@ -454,7 +454,7 @@ async function startStage3() {
 }
 
 async function handleStage3(action) {
-    if (action === 'vanguard data' || action === 'vanguard data solutions') {
+    if (action.includes('vanguard data')) {
         await addLine("Director: Company verified: Vanguard Data Solutions.");
         state.stage = 4;
         state.failures = 0;
