@@ -398,7 +398,7 @@ async function startStage1() {
 }
 
 async function handleStage1(action) {
-    if (action.includes('marcus_vanguard') || action.includes('marcus_v_vanguard')) {
+    if (action.includes('marcus_vanguard')) {
         startCaptcha1(async () => {
             await addLine("Director: Good work. Target identified on Instagram: @marcus_vanguard");
             state.stage = 2;
@@ -417,7 +417,7 @@ async function handleStage1(action) {
 async function startStage2() {
     await addLines([
         { text: "Director: We need the target's full real name." },
-        { text: "Director: Thoroughly scan their Instagram profile and links." },
+        { text: "Director: Thoroughly scan their Instagram profile and links and whatever other information you can find." },
         { text: "[SYSTEM]: Enter the target's full name:", class: "system" }
     ]);
 }
@@ -441,7 +441,7 @@ async function startStage3() {
 }
 
 async function handleStage3(action) {
-    if (action.includes('vanguard data solutions') || action === 'vanguard data') {
+    if (action === 'vanguard data') {
         await addLine("Director: Company verified: Vanguard Data Solutions.");
         state.stage = 4;
         state.failures = 0;
@@ -479,7 +479,7 @@ async function startStage5() {
 }
 
 async function handleStage5(action) {
-    if (action.includes('nightowl0x100') || action === 'nightowl0x100') {
+    if (action.includes('nightowl0x100')) {
         await addLine("Director: Found him on X: @nightowl0x100.");
         state.stage = 6;
         state.failures = 0;
