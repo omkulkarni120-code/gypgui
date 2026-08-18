@@ -373,17 +373,21 @@ function startCaptcha4(onSuccess) {
 // Stages
 // ----------------------------------------------------
 
+window.continueToStage1 = function() {
+    if (state.stage === 0) {
+        state.stage = 1;
+        state.failures = 0;
+        setTimeout(startStage1, 500);
+    }
+};
+
 async function handleStage0(action) {
     await addLine(`[SYSTEM]: Credentials accepted. Agent logged in with department code ${action.toUpperCase()}.`, "system");
     await addLine("[SYSTEM]: Establishing remote connection to target device...", "system");
     await new Promise(r => setTimeout(r, 1000));
 
-    // Open phone in new tab
-    window.open('./phone.html', '_blank');
-
-    state.stage = 1;
-    state.failures = 0;
-    setTimeout(startStage1, 500);
+    // Provide a clickable link to bypass mobile popup blockers
+    await addLine(`[SYSTEM]: CONNECTION READY. <a href="./phone.html" target="_blank" style="color: #00ffcc; text-decoration: underline; cursor: pointer;" onclick="continueToStage1()">CLICK HERE TO OPEN TARGET DEVICE</a>`, "system");
 }
 
 async function startStage1() {
