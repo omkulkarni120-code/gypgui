@@ -240,8 +240,8 @@
     // Error logging
     Sentry.init({
         dsn: "https://014048ae62f644208a429b561d74b5df@glitchtip.sg-app.com/2",
-        tracesSampleRate: 0.01, // 1% of transactions — adjust to your needs
-        autoSessionTracking: false, // GlitchTip does not support sessions
+        tracesSampleRate: 1.0,
+        autoSessionTracking: false,
     });
 </script>
 

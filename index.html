@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://browser.sentry-cdn.com/10.70.0/bundle.tracing.min.js"
+        integrity="sha384-ulyO9H9VeI4hygF7covSnj5NGna+KSaE/01Q5PU4fd9/Khcy3m1evRxyI3ylwhvS"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -45,6 +49,15 @@
     </div>
 
     <script src="script.js"></script>
+
+    <script>
+        // Error logging
+        Sentry.init({
+            dsn: "https://014048ae62f644208a429b561d74b5df@glitchtip.sg-app.com/2",
+            tracesSampleRate: 1.0,
+            autoSessionTracking: false,
+        });
+    </script>
 </body>
 
 </html>
