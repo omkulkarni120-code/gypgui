@@ -400,14 +400,14 @@ async function startStage1() {
         { text: "PHASE 1: Target Acquisition", class: "system" },
         { text: "==================================================", class: "system" },
         { text: "Director: Connection established. The target's phone screen is live." },
-        { text: "Director: We need their Instagram username to trace their network. Extract it using the remote access phone." },
-        { text: "[SYSTEM]: Enter the target's Instagram username:", class: "system" }
+        { text: "Director: We need their Instagram profile url to trace their network. Extract it using the remote access phone." },
+        { text: "[SYSTEM]: Enter the target's Instagram profile url:", class: "system" }
     ]);
     resetUrgencyTimer();
 }
 
 async function handleStage1(action) {
-    if (action.includes('marcus_vanguard')) {
+    if (action.includes('instagram.com/marcus_vanguard')) {
         startCaptcha1(async () => {
             await addLine("Director: Good work. Target identified on Instagram: @marcus_vanguard");
             state.stage = 2;
@@ -416,7 +416,7 @@ async function handleStage1(action) {
         });
     } else {
         state.failures++;
-        await addLine("[SYSTEM]: Incorrect username.", "error");
+        await addLine("[SYSTEM]: Incorrect instagram url.", "error");
         if (state.failures >= 3) {
             await addLine("Director [HINT]: Look through the phone apps.", "hint");
         }
