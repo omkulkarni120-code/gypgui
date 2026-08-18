@@ -1,11 +1,3 @@
-const CONFIG = {
-    PIN_CODE: "1234",
-    INSTAGRAM_LINK: "https://www.instagram.com/deer.2957301?igsh=MTBiNWN1cHU4MDlweg==",
-    LINKTREE_LINK: "https://linktr.ee/fake_marcus_vanguard_links",
-    LINKEDIN_LINK: "https://linkedin.com/in/fake-marcus-vanguard",
-    TWITTER_LINK: "https://twitter.com/fake_NightOwl_Sec"
-};
-
 const terminal = document.getElementById('terminal');
 const output = document.getElementById('output');
 const input = document.getElementById('command-input');
